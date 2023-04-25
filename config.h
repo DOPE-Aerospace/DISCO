@@ -3,8 +3,10 @@
 //      Configuration
 //----------------------------
 
-//Should the Integrated led be used for error messages? default = true
-#define active_led true
+//Should the Integrated led be used for error messages?
+#define active_led
 
-#define do_logging true
+//
+#define do_logging
+
 //----------------------------

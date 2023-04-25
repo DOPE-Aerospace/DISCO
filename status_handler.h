@@ -1,12 +1,8 @@
 #ifndef status_handler
 #define status_handler
 
-#include <Arduino.h>
-#include "config.h"
+void blink(unsigned = 1000);
 
-void blink(int, int = 1000, int = 500);
+[[noreturn]] void abort_blink(unsigned, unsigned = 3000, unsigned = 500);
 
 #endif
-
-
-

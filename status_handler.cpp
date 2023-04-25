@@ -1,17 +1,27 @@
+#include <Arduino.h>
+#include "config.h"
 #include "status_handler.h"
 
-void blink(int n_blinks, int time_out, int on_time) {
-  // I know this is a stupid function but writing 3 lines of code for every blink annoyed me too much...
-  // pinMode(LED_BUILTIN, OUTPUT); needs to be called before using this functio
+void blink(unsigned on_time){
+	// pinMode(LED_BUILTIN, OUTPUT); needs to be called before using this function
 
-  #if active_led == true
+	#ifdef active_led
+		digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
+		delay(on_time);          // wait for time_out milliseconds
+		digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
+	#endif
 
-  for (unsigned int n = 0; n < n_blinks; n++) {
-    digitalWrite(13, HIGH);  // turn the LED on (HIGH is the voltage level)
-    delay(on_time);                   // wait for time_out milliseconds
-    digitalWrite(13, LOW);   // turn the LED off by making the voltage LOW
-    delay(time_out);
-  }
+}
 
-  #endif
+[[noreturn]] void abort_blink(unsigned n_blinks, unsigned long_time, unsigned short_time){
+
+	while(42){
+		blink();
+		for(unsigned n = 1; n < n_blinks; ++n){
+			delay(short_time);
+			blink();
+		}
+		delay(long_time);
+	}
+  
 }
