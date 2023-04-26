@@ -13,7 +13,6 @@ String log_name;  //global because needed in loop() and setup()
 MPU6050 mpu(Wire);
 unsigned long saved_time = 0;
 
-
 void setup() {
 	
 	pinMode(LED_BUILTIN, OUTPUT);  //For the LEDs
@@ -32,7 +31,6 @@ void setup() {
 	while(status!=0) {}
 	Serial.println(F("Calculating offsets, do not move MPU6050"));
 	mpu.calcOffsets();
-	delay(1000);
 	Serial.println(F("Done!"));
 	
 	SD_Connect();                  //connecting to SD card
