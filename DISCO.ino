@@ -8,6 +8,12 @@
 #include "status_handler.h"
 #include "config.h"
 
+/* POSSIBLE ERROR MESSAGES
+
+  MPU error -> four rapid blinks and three seconds idle...
+
+*/
+
 Timer timer;      //global because needed in loop() and setup()
 String log_name;  //global because needed in loop() and setup()
 MPU6050 mpu(Wire);
@@ -28,7 +34,10 @@ void setup() {
 	Wire.begin(); //for the IMU
 	byte status = mpu.begin();
 	Serial.println("Inertial Mesuring Unit reports code: " + status);
-	while(status!=0) {}
+	if(status != 0){
+		Serial.println(F("Failed to initialize Inertial Mesuring Unit"));
+		abort_blink(4);
+	}
 	Serial.println(F("Calculating offsets, do not move MPU6050"));
 	mpu.calcOffsets();
 	Serial.println(F("Done!"));
