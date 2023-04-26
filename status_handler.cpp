@@ -10,7 +10,6 @@ void blink(unsigned on_time){
 		delay(on_time);          // wait for time_out milliseconds
 		digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
 	#endif
-
 }
 
 [[noreturn]] void abort_blink(unsigned n_blinks, unsigned long_time, unsigned short_time){
@@ -23,5 +22,12 @@ void blink(unsigned on_time){
 		}
 		delay(long_time);
 	}
-  
+}
+
+float batteryStatus() {
+	// read the input on analog pin 0:
+	int sensorValue = analogRead(ADC_BATTERY);
+	// Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 4.3V):
+	float voltage = sensorValue * (4.3 / 1023.0);
+	return voltage;
 }
