@@ -17,20 +17,29 @@
 
 #include "log_lib.h"
 
+bool SDcard::initialized = false;
+
+SDcard::SDcard() {
+	#ifdef do_logging
+	
+	if(!initialized){
+
+		if (!SD.begin(SDCARD_SS_PIN)) {  //CS is the Chip Select and could be interpreted like a Context Switch for peripherals, we use a Macro here.
+			Serial.println(F("ERROR_SD1: SD Card INIT Failed. is the card inserted? (logger.ino under SD_Connect())"));
+			abort_blink(2);
+		}
+		Serial.println(F("SD Card Recognized; The Gods are on our side..."));
+		initialized = true;
+		
+	}
+	#endif
+}
+
 Logger::Logger(String _job_name, String _catagories) {
 	#ifdef do_logging
-
 	job_name = _job_name;
 	catagories = _catagories;
-
-	if (!SD.begin(SDCARD_SS_PIN)) {  //CS is the Chip Select and could be interpreted like a Context Switch for peripherals, we use a Macro here.
-		Serial.println(F("ERROR_SD1: SD Card INIT Failed. is the card inserted? (logger.ino under SD_Connect())"));
-		abort_blink(2);
-	}
-	Serial.println(F("SD Card Recognized; The Gods are on our side..."));
-
 	create_log();
-
 	#endif
 }
 
