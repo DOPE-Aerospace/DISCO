@@ -39,7 +39,6 @@ void setup() {
   }
   Serial.println(F("Calculating offsets, do not move MPU6050"));
   mpu.calcOffsets();
-  delay(1000);
   Serial.println(F("Done!"));
 
 
