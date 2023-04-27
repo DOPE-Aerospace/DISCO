@@ -11,14 +11,14 @@
 
 class Logger {
 
-  String job_name, catagories, log_file_name;
-  void create_log();
-
-  public:
-
-  Logger(String _job_name, String _catagories);
-
-  void record_event(String text, Timer& timer);
+	String job_name, catagories, log_file_name;
+	void create_log();
+	
+	public:
+	
+	Logger(String _job_name, String _catagories);
+	
+	void record_event(String text, Timer& timer);
 
 };
 

@@ -6,13 +6,13 @@ void blink(unsigned on_time){
 	// pinMode(LED_BUILTIN, OUTPUT); needs to be called before using this function
 
 	#ifdef active_led
-    if(digitalRead(LED_BUILTIN) == HIGH) { //if the led is on, stop it
-      digitalWrite(LED_BUILTIN, LOW);
-    }
+	if(digitalRead(LED_BUILTIN) == HIGH) { //if the led is on, stop it
+		digitalWrite(LED_BUILTIN, LOW);
+	}
 
-		digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
-		delay(on_time);          // wait for time_out milliseconds
-		digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
+	digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
+	delay(on_time);          // wait for time_out milliseconds
+	digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
 	#endif
 }
 
