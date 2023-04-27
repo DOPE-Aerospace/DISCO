@@ -7,8 +7,21 @@
 #include "status_handler.h"
 #include "config.h"
 
-void SD_Connect();
-void record_event(String, String&, Timer&);
-String create_log(String, String = "Time, Event, Data");
+
+
+class Logger {
+
+  String job_name, catagories, log_file_name;
+  void create_log();
+
+  public:
+
+  Logger(String _job_name, String _catagories);
+
+  void record_event(String text, Timer& timer);
+
+};
+
+
 
 #endif
