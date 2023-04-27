@@ -59,12 +59,9 @@ void loop() {
 
   mpu.update();
   if((timer.read() - saved_time)>10){ // print data every 10ms
-    Serial.print("X : ");
     Serial.print(mpu.getAngleX());
-    Serial.print("\tY : ");
-    Serial.print(mpu.getAngleY());
-    Serial.print("\tZ : ");
-    Serial.println(mpu.getAngleZ());
+    Serial.print(", ");
+    Serial.println(mpu.getAngleY());
     saved_time = timer.read();  
   }
   
