@@ -9,6 +9,12 @@ It works in a modular way: using a config file sensors and parts can be activate
 - Logging on SD card (works on MKR Zero).
 - Realtime acceleration and orientation.
 
+## Led Status
+
+- SD Card Error -> Two rapid blinks and three seconds idle...
+- File Error -> Three rapid blinks and three seconds idle...
+- IMU Error -> Four rapid blinks and three seconds idle...
+
 ## Planed Capabilities:
 
 - Wireless Communication
