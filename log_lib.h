@@ -2,26 +2,16 @@
 #define log_lib
 
 #include <Timer.h>
-#include <SPI.h>  //Serial Peripheral Interface: Used for communication between SD card and Arduino
-#include <SD.h>
 #include "status_handler.h"
 #include "config.h"
-
-class SDcard {
-		
-	static bool initialized;
-		
-public:
-		
-	SDcard();
-		
-};
+#include "file_lib.h"
 
 class Logger {
 	
-	SDcard sd;
+	smart_file file;
 	
-	String job_name, catagories, log_file_name;
+	String job_name, catagories;
+	
 	void create_log();
 	
 public:

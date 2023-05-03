@@ -7,6 +7,7 @@
 #define active_led
 
 //LOGGING CONFIGURATION
-//#define do_logging
+#define do_logging
+//#define FAKE_SD
 
 //----------------------------
