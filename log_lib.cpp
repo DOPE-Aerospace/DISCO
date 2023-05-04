@@ -41,9 +41,8 @@ void Logger::create_log() {
 
 		String log_file_name = job_name + "_" + n + ".csv";
 		if (!file_exists(log_file_name)) {  //if the file is NOT present on the SD
-
+			
 			file = smart_file(log_file_name, FILE_WRITE);
-		
 			if (!file) {
 				Serial.println(F("ERROR_FILE1: Can't open file. Probably a file didn't close properly"));
 				abort_blink(3);
@@ -67,11 +66,12 @@ void Logger::create_log() {
 void Logger::record_event(String text, Timer& timer) {
 	#ifdef do_logging
 	//this is the logger function, after creating a log file we can use this to append new log entries onto the file.
-	String text_to_write = timer.read() + ", " + text;
+	String text_to_write = String(timer.read()) + ", " + text;
 	#ifdef FAKE_SD
 	Serial.println(text_to_write);
 	#else
 	file.println(text_to_write);
+	file.flush();
 	#endif
 	#endif
 }

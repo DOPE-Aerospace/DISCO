@@ -9,7 +9,7 @@
 #include "config.h"
 
 Timer timer;          //global because needed in loop() and setup()
-Logger logger("log", "time, data, content");      //global because needed in loop() and setup()
+Logger logger;      //global because needed in loop() and setup()
 MPU6050 mpu(Wire);    //Class for the IMU
 unsigned long saved_time = 0; //dynamic delay 
 
@@ -27,13 +27,14 @@ void setup() {
 	// why not a delay()? becouse we cant know exactly how long we have to wait, in this way we dont loose time.
 	}
 	Serial.println(F("Serial started; May your Coffee kick in before the Rocket does..."));
-	
+	logger = Logger("log", "time, data, content");
 	//===========
 	// IMU INIT
 	//===========
 	Wire.begin(); //for the IMU
 	byte status = mpu.begin();
-	Serial.println("Inertial Mesuring Unit reports code: " + status);
+	Serial.print("Inertial Mesuring Unit reports code: ");
+	Serial.println(String(status));
 	if (status != 0) {
 		abort_blink(4);
 	}
@@ -52,15 +53,14 @@ void setup() {
 	//===========
 	timer.start();
 	Serial.println(F("Setup finished."));
+	
 }
 
 void loop() {
 
 	mpu.update();
 	if((timer.read() - saved_time)>10){ // print data every 10ms
-		Serial.print(mpu.getAngleX());
-		Serial.print(", ");
-		Serial.println(mpu.getAngleY());
+		logger.record_event(String(mpu.getAngleX()) + ", " + mpu.getAngleY(), timer);
 		saved_time = timer.read();
 	}
 

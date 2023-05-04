@@ -16,6 +16,8 @@ class Logger {
 	
 public:
 	
+	Logger() = default;
+
 	Logger(String _job_name, String _catagories);
 	
 	void record_event(String text, Timer& timer);
