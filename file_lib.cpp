@@ -29,6 +29,17 @@ smart_file::smart_file(const String &filename, uint8_t mode){
 	static_cast<File&>(*this) = SD.open(filename.c_str(), mode);
 }
 
+smart_file::smart_file(smart_file&& original_file){
+	static_cast<File&>(*this) = static_cast<File&>(original_file);
+	static_cast<File&>(original_file) = File();
+}
+
+smart_file& smart_file::operator=(smart_file&& original_file){
+	static_cast<File&>(*this) = static_cast<File&>(original_file);
+	static_cast<File&>(original_file) = File();
+	return *this;
+}
+
 smart_file::~smart_file(){
 	if(*this){
 		close();

@@ -20,6 +20,8 @@ public:
 	smart_file(const char *filename, uint8_t mode = FILE_READ);
 	smart_file(const String &filename, uint8_t mode = FILE_READ);
 
+	smart_file(smart_file&&);
+	smart_file& operator=(smart_file&&);
 	~smart_file();
 
 	//using declarations to export member functions of File
