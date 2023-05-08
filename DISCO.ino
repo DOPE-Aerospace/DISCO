@@ -16,6 +16,11 @@ unsigned long saved_time = 0; //dynamic delay
 
 void setup() {
 	pinMode(LED_BUILTIN, OUTPUT);  //For the LEDs
+	pinMode(RGB_RED, OUTPUT);
+	pinMode(RGB_GREEN, OUTPUT);
+	pinMode(RGB_BLUE, OUTPUT);
+
+	rgb_color(0,0,255); //setup color
 	
 	
 	//=============
@@ -27,7 +32,9 @@ void setup() {
 	// why not a delay()? becouse we cant know exactly how long we have to wait, in this way we dont loose time.
 	}
 	Serial.println(F("Serial started; May your Coffee kick in before the Rocket does..."));
-	logger = Logger("log", "time, data, content");
+	
+	Serial.println("Battery status is: " + String(batteryStatus()) + " volts");
+
 	//===========
 	// IMU INIT
 	//===========
@@ -46,14 +53,17 @@ void setup() {
 	//=============
 	// Logger Init
 	//=============
-	//logger =
+	SD.begin();
+	logger = Logger("log", "time, data, content");
 	
 	//===========
 	//   Misc
 	//===========
 	timer.start();
 	Serial.println(F("Setup finished."));
+
 	
+	rgb_color(0, 255, 0); //setup finished
 }
 
 void loop() {

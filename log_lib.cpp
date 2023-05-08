@@ -15,7 +15,7 @@
 #include "log_lib.h"
 
 Logger::Logger(String _job_name, String _catagories) {
-	#ifdef do_logging
+	#ifdef DO_LOGGING
 	job_name = _job_name;
 	catagories = _catagories;
 	create_log();
@@ -23,7 +23,7 @@ Logger::Logger(String _job_name, String _catagories) {
 }
 
 void Logger::create_log() {
-	#ifdef do_logging
+	#ifdef DO_LOGGING
 	#ifdef FAKE_SD
 	//FAKE_SD makes log print to Serial
 
@@ -64,7 +64,7 @@ void Logger::create_log() {
 
 
 void Logger::record_event(String text, Timer& timer) {
-	#ifdef do_logging
+	#ifdef DO_LOGGING
 	//this is the logger function, after creating a log file we can use this to append new log entries onto the file.
 	String text_to_write = String(timer.read()) + ", " + text;
 	#ifdef FAKE_SD
