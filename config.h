@@ -14,9 +14,13 @@
 #define USE_RGB
 
 //RGB pinout options.
-#define RGB_RED 3
-#define RGB_GREEN 4
-#define RGB_BLUE 5
+#define RGB_PIN_RED 0
+#define RGB_PIN_GREEN 1
+#define RGB_PIN_BLUE 2
+
+#define RGB_ROSSO 100, 0, 0
+#define RGB_GREEN 0, 100, 0
+#define RGB_BLUE 0, 0, 100
 
 //-----------------
 // ACTIVE LOGGING
@@ -26,6 +30,6 @@
 #define DO_LOGGING
 
 //This define pipes the SD_CARD input to serial.
-//#define FAKE_SD
+#define FAKE_SD
 
 //----------------------------

@@ -9,20 +9,22 @@
 #include "config.h"
 
 Timer timer;          //global because needed in loop() and setup()
-Logger logger;      //global because needed in loop() and setup()
+Logger imu_logger;      //global because needed in loop() and setup()
+
 MPU6050 mpu(Wire);    //Class for the IMU
 unsigned long saved_time = 0; //dynamic delay 
 
 
 void setup() {
-	pinMode(LED_BUILTIN, OUTPUT);  //For the LEDs
-	pinMode(RGB_RED, OUTPUT);
-	pinMode(RGB_GREEN, OUTPUT);
-	pinMode(RGB_BLUE, OUTPUT);
 
-	rgb_color(0,0,255); //setup color
-	
-	
+	pinMode(LED_BUILTIN, OUTPUT);  //For the LEDs
+	pinMode(RGB_PIN_RED, OUTPUT);
+	pinMode(RGB_PIN_GREEN, OUTPUT);
+	pinMode(RGB_PIN_BLUE, OUTPUT);
+
+	rgb_color(RGB_BLUE); //setup color
+
+
 	//=============
 	// SERIAL INIT
 	//=============
@@ -32,8 +34,6 @@ void setup() {
 	// why not a delay()? becouse we cant know exactly how long we have to wait, in this way we dont loose time.
 	}
 	Serial.println(F("Serial started; May your Coffee kick in before the Rocket does..."));
-	
-	Serial.println("Battery status is: " + String(batteryStatus()) + " volts");
 
 	//===========
 	// IMU INIT
@@ -53,24 +53,24 @@ void setup() {
 	//=============
 	// Logger Init
 	//=============
-	SD.begin();
-	logger = Logger("log", "time, data, content");
+
+	imu_logger = Logger("imu", "time, x, y, z");
 	
 	//===========
 	//   Misc
 	//===========
+	Serial.println("Battery status is: " + String(batteryStatus()) + " volts");
 	timer.start();
 	Serial.println(F("Setup finished."));
-
+	rgb_color(RGB_GREEN); //setup finished
 	
-	rgb_color(0, 255, 0); //setup finished
 }
 
 void loop() {
 
 	mpu.update();
-	if((timer.read() - saved_time)>10){ // print data every 10ms
-		logger.record_event(String(mpu.getAngleX()) + ", " + mpu.getAngleY(), timer);
+	if((timer.read() - saved_time)>1000){ // print data every 5000ms
+		imu_logger.record_event(String(mpu.getAngleX()) + ", " + mpu.getAngleY(), timer);
 		saved_time = timer.read();
 	}
 
