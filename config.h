@@ -18,7 +18,7 @@
 #define RGB_PIN_GREEN 1
 #define RGB_PIN_BLUE 2
 
-#define RGB_ROSSO 100, 0, 0
+#define RGB_RED 100, 0, 0
 #define RGB_GREEN 0, 100, 0
 #define RGB_BLUE 0, 0, 100
 
@@ -30,6 +30,6 @@
 #define DO_LOGGING
 
 //This define pipes the SD_CARD input to serial.
-#define FAKE_SD
+//#define FAKE_SD
 
 //----------------------------

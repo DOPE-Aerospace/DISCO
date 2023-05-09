@@ -22,9 +22,9 @@ void blink(unsigned on_time){
 void rgb_color(unsigned red, unsigned green, unsigned blue) {
 	#ifdef USE_LED
 	#ifdef USE_RGB
-	digitalWrite(RGB_RED, red);
-	digitalWrite(RGB_GREEN, green);
-	digitalWrite(RGB_BLUE, blue);
+	analogWrite(RGB_PIN_RED, red);
+	analogWrite(RGB_PIN_GREEN, green);
+	analogWrite(RGB_PIN_BLUE, blue);
 	#endif
 	#endif
 }

@@ -41,7 +41,7 @@ void Logger::create_log() {
 
 		String log_file_name = job_name + "_" + n + ".csv";
 		if (!file_exists(log_file_name)) {  //if the file is NOT present on the SD
-			
+			Serial.println("Created file at: " + log_file_name);
 			file = smart_file(log_file_name, FILE_WRITE);
 			if (!file) {
 				Serial.println(F("ERROR_FILE1: Can't open file. Probably a file didn't close properly"));

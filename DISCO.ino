@@ -54,7 +54,23 @@ void setup() {
 	// Logger Init
 	//=============
 
-	imu_logger = Logger("imu", "time, x, y, z");
+	unsigned int n = 0;  //counter for file creation
+	bool created = false;
+	String log_folder_name;
+
+	while (!created) {         //if this log file already exists, we create another in the format log_2.txt
+
+		log_folder_name = "/launch_" + String(n);
+		if (!file_exists(log_folder_name)) {  //if the file is NOT present on the SD	
+			SD.mkdir(log_folder_name);
+			created = true;	
+			Serial.println("Created new folder as: " + log_folder_name);
+		} else {  //else we try again with log_(n+1).txt
+			n++;
+		}
+	}
+
+	imu_logger = Logger(log_folder_name + "/imu", "time, x, y, z");
 	
 	//===========
 	//   Misc
