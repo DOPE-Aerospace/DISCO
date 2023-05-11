@@ -25,13 +25,19 @@ void setup() {
 	rgb_color(RGB_BLUE); //setup color
 
 
+
 	//=============
 	// SERIAL INIT
 	//=============
+
 	Serial.begin(9600);  //Bit per second data transfer, for now we send only text which works good with 9600
+
+	timer.start();
+
 	while (!Serial) {
 	//this empty while is intentional, sometimes serial connection is not established immediately, but we need it so we wait...
-	// why not a delay()? becouse we cant know exactly how long we have to wait, in this way we dont loose time.
+	// why not a delay()? because we cant know exactly how long we have to wait, in this way we dont loose time.
+		if(timer.read() > 500) {break;}
 	}
 	Serial.println(F("Serial started; May your Coffee kick in before the Rocket does..."));
 
@@ -40,15 +46,16 @@ void setup() {
 	//===========
 	Wire.begin(); //for the IMU
 	byte status = mpu.begin();
-	Serial.print("Inertial Mesuring Unit reports code: ");
+	Serial.print("Inertial Measuring Unit yells code: ");
 	Serial.println(String(status));
 	if (status != 0) {
 		abort_blink(4);
 	}
-	Serial.println(F("Calculating offsets, do not move MPU6050"));
+	Serial.println(F("Calculating offsets, DON'T YEEET THE DEVICE!"));
 	mpu.calcOffsets();
-	Serial.println(F("Done!"));
-	
+	Serial.println(F("Done! the offsets aree:"));
+	Serial.println("Accel: X:" + String(mpu.getAccXoffset()) + " Y:" + mpu.getAccYoffset() + " Z:" + mpu.getAccZoffset());
+	Serial.println("Gyro: X:" + String(mpu.getGyroXoffset()) + " Y:" + mpu.getGyroYoffset() + " Z:" + mpu.getGyroZoffset());
 	
 	//=============
 	// Logger Init
@@ -66,7 +73,7 @@ void setup() {
 			created = true;	
 			Serial.println("Created new folder as: " + log_folder_name);
 		} else {  //else we try again with log_(n+1).txt
-			n++;
+			++n;
 		}
 	}
 
@@ -76,7 +83,6 @@ void setup() {
 	//   Misc
 	//===========
 	Serial.println("Battery status is: " + String(batteryStatus()) + " volts");
-	timer.start();
 	Serial.println(F("Setup finished."));
 	rgb_color(RGB_GREEN); //setup finished
 	
@@ -85,7 +91,7 @@ void setup() {
 void loop() {
 
 	mpu.update();
-	if((timer.read() - saved_time)>1000){ // print data every 5000ms
+	if((timer.read() - saved_time)>500){ // print data every 500ms
 		imu_logger.record_event(String(mpu.getAngleX()) + ", " + mpu.getAngleY(), timer);
 		saved_time = timer.read();
 	}
