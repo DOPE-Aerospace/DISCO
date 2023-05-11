@@ -9,6 +9,9 @@ void initSD(); //called by smart_file constructor if SD_initialized is false
 bool file_exists(const char *filepath);
 bool file_exists(const String &filepath);
 
+bool make_dir(const char *filepath);
+bool make_dir(const String &filepath);
+
 class smart_file : File {
 
 	smart_file(File&&);

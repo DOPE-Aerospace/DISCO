@@ -65,6 +65,20 @@ void initSD(){
 
 }
 
+bool make_dir(const char *filepath){
+	if(!SD_initialized){
+		initSD();
+	}
+	return SD.mkdir(filepath);
+}
+
+bool make_dir(const String &filepath){
+	if(!SD_initialized){
+		initSD();
+	}
+	return SD.mkdir(filepath.c_str());
+}
+
 bool file_exists(const char *filepath){
 	if(!SD_initialized){
 		initSD();

@@ -46,7 +46,7 @@ void setup() {
 	//===========
 	Wire.begin(); //for the IMU
 	byte status = mpu.begin();
-	Serial.print("Inertial Measuring Unit yells code: ");
+	Serial.print(F("Inertial Measuring Unit yells code: "));
 	Serial.println(String(status));
 	if (status != 0) {
 		abort_blink(4);
@@ -67,9 +67,13 @@ void setup() {
 
 	while (!created) {         //if this log file already exists, we create another in the format log_2.txt
 
-		log_folder_name = "/launch_" + String(n);
-		if (!file_exists(log_folder_name)) {  //if the file is NOT present on the SD	
-			SD.mkdir(log_folder_name);
+		log_folder_name = "yeet_" + String(n);
+		if (!file_exists(log_folder_name)) {  //if the file is NOT present on the SD
+			Serial.println(log_folder_name);
+			if(!make_dir(log_folder_name)) {
+				Serial.println(F("ERROR_FILE3: Can't create directory."));
+				abort_blink(3);
+			}
 			created = true;	
 			Serial.println("Created new folder as: " + log_folder_name);
 		} else {  //else we try again with log_(n+1).txt
