@@ -14,7 +14,7 @@
 
 #include "log_lib.h"
 
-Logger::Logger(String _job_name, String _catagories) {
+Logger::Logger(const String& _job_name, const String& _catagories) {
 	#ifdef DO_LOGGING
 	job_name = _job_name;
 	catagories = _catagories;
@@ -41,13 +41,13 @@ void Logger::create_log() {
 
 		String log_file_name = job_name + "_" + n + ".csv";
 		if (!file_exists(log_file_name)) {  //if the file is NOT present on the SD
-			Serial.println("Created file at: " + log_file_name);
 			file = smart_file(log_file_name, FILE_WRITE);
 			if (!file) {
 				Serial.println(F("ERROR_FILE1: Can't open file. Probably a file didn't close properly"));
 				abort_blink(3);
 			}
 
+			Serial.println("Created file at: " + log_file_name);
 			created = true;
 			
 		} else {  //else we try again with log_(n+1).txt
@@ -63,7 +63,7 @@ void Logger::create_log() {
 }
 
 
-void Logger::record_event(String text, Timer& timer) {
+void Logger::record_event(const String& text, Timer& timer) {
 	#ifdef DO_LOGGING
 	//this is the logger function, after creating a log file we can use this to append new log entries onto the file.
 	String text_to_write = String(timer.read()) + ", " + text;

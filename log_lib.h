@@ -18,9 +18,9 @@ public:
 	
 	Logger() = default;
 
-	Logger(String _job_name, String _catagories);
+	Logger(const String& _job_name, const String& _catagories);
 	
-	void record_event(String text, Timer& timer);
+	void record_event(const String& text, Timer& timer);
 
 };
 
