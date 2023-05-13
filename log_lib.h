@@ -20,10 +20,19 @@ public:
 
 	Logger(const String& _job_name, const String& _catagories);
 	
-	void record_event(const String& text, Timer& timer);
+	void record_event(const String& text);
 
 };
 
+class MessageLogger : public Logger{
+
+public:
+
+	using Logger::Logger;
+
+	void record_event(const String& text);
+
+};
 
 
 #endif

@@ -56,17 +56,17 @@ void Logger::create_log() {
 
 	}
 
-	file.println(catagories);
+	file.println("time, " + catagories);
 
 	#endif
 	#endif
 }
 
 
-void Logger::record_event(const String& text, Timer& timer) {
+void Logger::record_event(const String& text) {
 	#ifdef DO_LOGGING
 	//this is the logger function, after creating a log file we can use this to append new log entries onto the file.
-	String text_to_write = String(timer.read()) + ", " + text;
+	String text_to_write = String(millis()) + ", " + text;
 	#ifdef FAKE_SD
 	Serial.println(text_to_write);
 	#else
@@ -74,4 +74,9 @@ void Logger::record_event(const String& text, Timer& timer) {
 	file.flush();
 	#endif
 	#endif
+}
+
+void MessageLogger::record_event(const String& text) {
+	Serial.println(text);
+	Logger::record_event("\"" + text + "\"");
 }

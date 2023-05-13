@@ -8,8 +8,9 @@
 #include "status_handler.h"
 #include "config.h"
 
-Timer timer;          //global because needed in loop() and setup()
-Logger imu_logger;      //global because needed in loop() and setup()
+Timer timer;              //global because needed in loop() and setup()
+Logger imu_logger;        //global because needed in loop() and setup()
+MessageLogger info_logger; //global because needed in loop() and setup()
 
 MPU6050 mpu(Wire);    //Class for the IMU
 unsigned long saved_time = 0; //dynamic delay 
@@ -24,8 +25,6 @@ void setup() {
 
 	rgb_color(RGB_BLUE); //setup color
 
-
-
 	//=============
 	// SERIAL INIT
 	//=============
@@ -37,25 +36,10 @@ void setup() {
 	while (!Serial) {
 	//this empty while is intentional, sometimes serial connection is not established immediately, but we need it so we wait...
 	// why not a delay()? because we cant know exactly how long we have to wait, in this way we dont loose time.
-		if(timer.read() > 500) {break;}
+		if(timer.read() > 1000) {break;}
 	}
-	Serial.println(F("Serial started; May your Coffee kick in before the Rocket does..."));
 
-	//===========
-	// IMU INIT
-	//===========
-	Wire.begin(); //for the IMU
-	byte status = mpu.begin();
-	Serial.print(F("Inertial Measuring Unit yells code: "));
-	Serial.println(String(status));
-	if (status != 0) {
-		abort_blink(4);
-	}
-	Serial.println(F("Calculating offsets, DON'T YEEET THE DEVICE!"));
-	mpu.calcOffsets();
-	Serial.println(F("Done! the offsets aree:"));
-	Serial.println("Accel: X:" + String(mpu.getAccXoffset()) + " Y:" + mpu.getAccYoffset() + " Z:" + mpu.getAccZoffset());
-	Serial.println("Gyro: X:" + String(mpu.getGyroXoffset()) + " Y:" + mpu.getGyroYoffset() + " Z:" + mpu.getGyroZoffset());
+	Serial.println(F("Serial started; May your Coffee kick in before the Rocket does..."));
 	
 	//=============
 	// Logger Init
@@ -81,13 +65,30 @@ void setup() {
 		}
 	}
 
-	imu_logger = Logger(log_folder_name + "/imu", "time, x, y, z");
+	info_logger = MessageLogger(log_folder_name + "/info", "message");
+	imu_logger = Logger(log_folder_name + "/imu", "x, y, z");
 	
+	//===========
+	// IMU INIT
+	//===========
+	Wire.begin(); //for the IMU
+	byte status = mpu.begin();
+	info_logger.record_event("Inertial Measuring Unit yells code: ");
+	info_logger.record_event(String(status));
+	if (status != 0) {
+		abort_blink(4);
+	}
+	info_logger.record_event("Calculating offsets, DON'T YEEET THE DEVICE!");
+	mpu.calcOffsets();
+	info_logger.record_event("Done! the offsets aree:");
+	info_logger.record_event("Accel: X:" + String(mpu.getAccXoffset()) + " Y:" + mpu.getAccYoffset() + " Z:" + mpu.getAccZoffset());
+	info_logger.record_event("Gyro: X:" + String(mpu.getGyroXoffset()) + " Y:" + mpu.getGyroYoffset() + " Z:" + mpu.getGyroZoffset());
+
 	//===========
 	//   Misc
 	//===========
-	Serial.println("Battery status is: " + String(batteryStatus()) + " volts");
-	Serial.println(F("Setup finished."));
+	info_logger.record_event("Battery status is: " + String(batteryStatus()) + " volts");
+	info_logger.record_event("Setup finished.");
 	rgb_color(RGB_GREEN); //setup finished
 	
 }
@@ -96,7 +97,7 @@ void loop() {
 
 	mpu.update();
 	if((timer.read() - saved_time)>500){ // print data every 500ms
-		imu_logger.record_event(String(mpu.getAngleX()) + ", " + mpu.getAngleY(), timer);
+		imu_logger.record_event(String(mpu.getAngleX()) + ", " + mpu.getAngleY());
 		saved_time = timer.read();
 	}
 
