@@ -29,7 +29,7 @@ void setup() {
 	// SERIAL INIT
 	//=============
 
-	Serial.begin(9600);  //Bit per second data transfer, for now we send only text which works good with 9600
+	Serial.begin(9600);  //Bit per second data transfer, for now we send only text which works good with 9600!
 
 	timer.start();
 
