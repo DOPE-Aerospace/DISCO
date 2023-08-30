@@ -27,6 +27,16 @@ enum timer {
 
 unsigned long saved_times[number_of_jobs] = {};
 
+template<typename F>
+void if_time_expired(timer job, unsigned long delay, F fn){
+
+	if(millis() - saved_times[job] > delay){ // print data every 500ms
+		fn();
+		saved_times[job] = millis();
+	}
+
+}
+
 void setup() {
 
 	pinMode(LED_BUILTIN, OUTPUT);  //For the LEDs
@@ -106,10 +116,11 @@ void loop() {
 	//===========
 	// IMU PART
 	//===========
-	if((millis() - saved_times[imu])>IMU_DELAY){ // print data every 500ms
+	if_time_expired(imu, IMU_DELAY, [](){ // print data every 500ms
 		mpu.update();
 		imu_logger.record_event(String(mpu.getAngleX()) + ", " + mpu.getAngleY());
-		saved_times[imu] = millis();
-	}
+	});
 
 }
+
+
