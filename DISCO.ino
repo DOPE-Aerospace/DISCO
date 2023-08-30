@@ -12,8 +12,20 @@ MessageLogger info_logger; //global because needed in loop() and setup()
 
 MPU6050 mpu(Wire);    //Class for the IMU
 
-unsigned long imu_timer = 0; //dynamic delay 
+//Adding a new timer is simple, add it before the last enum.
+enum timer {
 
+	imu,
+
+	bmp,
+
+	antenna,
+
+	number_of_jobs //THIS HAS TO BE THE LAST OF THE ENUMS
+
+};
+
+unsigned long saved_times[number_of_jobs] = {};
 
 void setup() {
 
@@ -29,11 +41,11 @@ void setup() {
 	//=============
 	Serial.begin(9600);  //Bit per second data transfer, for now we send only text which works good with 9600
 
-	int saved_time = millis();
+	unsigned long saved_time = millis();
 
 	while (!Serial) {
 	//this empty while is intentional, sometimes serial connection is not established immediately, but we need it so we wait...
-		if(saved_time+1000 < millis() ) {break;} //after onesecond 
+		if(saved_time+1000u < millis() ) {break;} //after onesecond 
 	}
 
 	Serial.println(F("Serial started; May your Coffee kick in before the Rocket does..."));
@@ -94,10 +106,10 @@ void loop() {
 	//===========
 	// IMU PART
 	//===========
-	mpu.update();
-	if((millis() - imu_timer)>500){ // print data every 500ms
+	if((millis() - saved_times[imu])>IMU_DELAY){ // print data every 500ms
+		mpu.update();
 		imu_logger.record_event(String(mpu.getAngleX()) + ", " + mpu.getAngleY());
-		saved_time = millis();
+		saved_times[imu] = millis();
 	}
 
 }
