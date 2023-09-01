@@ -17,10 +17,6 @@ enum timer {
 
 	imu,
 
-	bmp,
-
-	antenna,
-
 	number_of_jobs //THIS HAS TO BE THE LAST OF THE ENUMS
 
 };
