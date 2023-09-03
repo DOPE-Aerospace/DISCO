@@ -32,4 +32,9 @@
 //This define pipes the SD_CARD input to serial.
 //#define FAKE_SD
 
-//----------------------------
+//---------------
+//  IMU CONFIG
+//---------------
+
+//How often the IMU querrys in milliseconds 
+#define IMU_DELAY 500

@@ -1,4 +1,3 @@
-#include <Timer.h>
 #include <SPI.h>  //Serial Peripheral Interface: Used for communication between SD card and Arduino
 #include <SD.h>
 #include <MPU6050_light.h>
@@ -8,13 +7,31 @@
 #include "status_handler.h"
 #include "config.h"
 
-Timer timer;              //global because needed in loop() and setup()
 Logger imu_logger;        //global because needed in loop() and setup()
 MessageLogger info_logger; //global because needed in loop() and setup()
 
 MPU6050 mpu(Wire);    //Class for the IMU
-unsigned long saved_time = 0; //dynamic delay 
 
+//Adding a new timer is simple, add it before the last enum.
+enum timer {
+
+	imu,
+
+	number_of_jobs //THIS HAS TO BE THE LAST OF THE ENUMS
+
+};
+
+unsigned long saved_times[number_of_jobs] = {};
+
+template<typename F>
+void if_time_expired(timer job, unsigned long delay, F fn){
+
+	if(millis() - saved_times[job] > delay){
+		fn();
+		saved_times[job] = millis();
+	}
+
+}
 
 void setup() {
 
@@ -28,15 +45,13 @@ void setup() {
 	//=============
 	// SERIAL INIT
 	//=============
-
 	Serial.begin(9600);  //Bit per second data transfer, for now we send only text which works good with 9600
 
-	timer.start();
+	unsigned long saved_time = millis();
 
 	while (!Serial) {
 	//this empty while is intentional, sometimes serial connection is not established immediately, but we need it so we wait...
-	// why not a delay()? because we cant know exactly how long we have to wait, in this way we dont loose time.
-		if(timer.read() > 1000) {break;}
+		if(saved_time+1000u < millis() ) {break;} //after onesecond 
 	}
 
 	Serial.println(F("Serial started; May your Coffee kick in before the Rocket does..."));
@@ -44,7 +59,6 @@ void setup() {
 	//=============
 	// Logger Init
 	//=============
-
 	unsigned int n = 0;  //counter for file creation
 	bool created = false;
 	String log_folder_name;
@@ -95,10 +109,14 @@ void setup() {
 
 void loop() {
 
-	mpu.update();
-	if((timer.read() - saved_time)>500){ // print data every 500ms
+	//===========
+	// IMU PART
+	//===========
+	if_time_expired(imu, IMU_DELAY, [](){ // print data every 500ms
+		mpu.update();
 		imu_logger.record_event(String(mpu.getAngleX()) + ", " + mpu.getAngleY());
-		saved_time = timer.read();
-	}
+	});
 
 }
+
+
