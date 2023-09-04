@@ -1,23 +1,38 @@
+//Communication Librarys
 #include <SPI.h>  //Serial Peripheral Interface: Used for communication between SD card and Arduino
-#include <SD.h>
-#include <MPU6050_light.h>
 #include <Wire.h>
+#include <SD.h>
 
+//Sensor Librarys
+#include <MPU6050_light.h>
+#include <Adafruit_Sensor.h>
+#include "Adafruit_BMP3XX.h"
+
+//Custom Librarys
 #include "log_lib.h"
 #include "status_handler.h"
 #include "config.h"
 
+//Logger Globals
 Logger imu_logger;        //global because needed in loop() and setup()
 MessageLogger info_logger; //global because needed in loop() and setup()
 
+//IMU Globals
 MPU6050 mpu(Wire);    //Class for the IMU
+
+//Barometer Globals
+Adafruit_BMP3XX bmp;
+float starting_pressure = 0;
+float saved_pressure = 0;
+bool falling = false;
+double min_press = 0;
 
 //Adding a new timer is simple, add it before the last enum.
 enum timer {
 
 	imu,
 
-	number_of_jobs //THIS HAS TO BE THE LAST OF THE ENUMS
+	number_of_jobs //THIS HAS TO BE THE LAST ENUM
 
 };
 
@@ -97,6 +112,34 @@ void setup() {
 	info_logger.record_event("Done! the offsets aree:");
 	info_logger.record_event("Accel: X:" + String(mpu.getAccXoffset()) + " Y:" + mpu.getAccYoffset() + " Z:" + mpu.getAccZoffset());
 	info_logger.record_event("Gyro: X:" + String(mpu.getGyroXoffset()) + " Y:" + mpu.getGyroYoffset() + " Z:" + mpu.getGyroZoffset());
+
+	//=====================
+	//   Barometer INIT
+	//=====================
+	if (!bmp.begin_I2C()) {
+		Serial.println("Could not find a valid BMP3 sensor, check wiring!");
+		while (1);
+	}
+
+	// Set up oversampling and filter initialization
+  	bmp.setTemperatureOversampling(BMP3_NO_OVERSAMPLING);
+  	bmp.setPressureOversampling(BMP3_OVERSAMPLING_2X);
+  	bmp.setIIRFilterCoeff(BMP3_IIR_FILTER_DISABLE);
+  	bmp.setOutputDataRate(BMP3_ODR_25_HZ);
+
+	Serial.println("Doing 10 Settling readings"); //the first readings are always wrong, we hate them
+
+  	for (int i = 0; i<10; i++) { //10 was choosen at random, i do not know if we need less or more
+		if (! bmp.performReading()) {
+    		Serial.println("Failed to perform reading :(");
+    		return;
+  		}
+	}
+
+	Serial.println("-----Calibrating Height-----");
+  	Serial.println(String("Setting ") + (bmp.pressure) + " as ground pressure...");
+  	starting_pressure = (bmp.pressure);
+	min_press = starting_pressure;
 
 	//===========
 	//   Misc
