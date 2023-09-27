@@ -42,7 +42,8 @@ unsigned long saved_times[number_of_jobs] = {};
 template<typename F>
 void if_time_expired(timer job, unsigned long delay, F fn){
 
-	if(millis() - saved_times[job] > delay){
+	if (millis() - saved_times[job] > delay)
+  {
 		fn();
 		saved_times[job] = millis();
 	}
