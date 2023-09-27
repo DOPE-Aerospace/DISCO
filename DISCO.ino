@@ -28,7 +28,8 @@ bool falling = false;
 double min_press = 0;
 
 //Adding a new timer is simple, add it before the last enum.
-enum timer {
+enum timer
+{
 
 	imu,
 
