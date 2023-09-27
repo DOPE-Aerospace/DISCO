@@ -12,7 +12,8 @@ bool file_exists(const String &filepath);
 bool make_dir(const char *filepath);
 bool make_dir(const String &filepath);
 
-class smart_file : File {
+class smart_file : File 
+{
 
 	smart_file(File&&);
 

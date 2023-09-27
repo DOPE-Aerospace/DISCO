@@ -6,7 +6,8 @@
 #include "config.h"
 #include "file_lib.h"
 
-class Logger {
+class Logger 
+{
 	
 	smart_file file;
 	
@@ -24,7 +25,8 @@ public:
 
 };
 
-class MessageLogger : public Logger{
+class MessageLogger : public Logger
+{
 
 public:
 

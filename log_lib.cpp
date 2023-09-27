@@ -14,7 +14,8 @@
 
 #include "log_lib.h"
 
-Logger::Logger(const String& _job_name, const String& _catagories) {
+Logger::Logger(const String& _job_name, const String& _catagories) 
+{
 	#ifdef DO_LOGGING
 	job_name = _job_name;
 	catagories = _catagories;
@@ -22,7 +23,8 @@ Logger::Logger(const String& _job_name, const String& _catagories) {
 	#endif
 }
 
-void Logger::create_log() {
+void Logger::create_log() 
+{
 	#ifdef DO_LOGGING
 	#ifdef FAKE_SD
 	//FAKE_SD makes log print to Serial
@@ -37,12 +39,15 @@ void Logger::create_log() {
 	unsigned int n = 0;  //counter for file creation
 	bool created = false;
 
-	while (!created) {         //if this log file already exists, we create another in the format log_2.txt
+	while (!created) 
+  {         //if this log file already exists, we create another in the format log_2.txt
 
 		String log_file_name = job_name + "_" + n + ".csv";
-		if (!file_exists(log_file_name)) {  //if the file is NOT present on the SD
+		if (!file_exists(log_file_name)) 
+    {  //if the file is NOT present on the SD
 			file = smart_file(log_file_name, FILE_WRITE);
-			if (!file) {
+			if (!file) 
+      {
 				Serial.println(F("ERROR_FILE1: Can't open file. Probably a file didn't close properly"));
 				abort_blink(3);
 			}
@@ -50,8 +55,10 @@ void Logger::create_log() {
 			Serial.println("Created file at: " + log_file_name);
 			created = true;
 			
-		} else {  //else we try again with log_(n+1).txt
-			n++;
+		}
+    else 
+    {  //else we try again with log_(n+1).txt
+			++n;
 		}
 
 	}
@@ -63,7 +70,8 @@ void Logger::create_log() {
 }
 
 
-void Logger::record_event(const String& text) {
+void Logger::record_event(const String& text) 
+{
 	#ifdef DO_LOGGING
 	//this is the logger function, after creating a log file we can use this to append new log entries onto the file.
 	String text_to_write = String(millis()) + ", " + text;
@@ -76,7 +84,8 @@ void Logger::record_event(const String& text) {
 	#endif
 }
 
-void MessageLogger::record_event(const String& text) {
+void MessageLogger::record_event(const String& text) 
+{
 	Serial.println(text);
 	Logger::record_event("\"" + text + "\"");
 }

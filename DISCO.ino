@@ -30,28 +30,24 @@ double min_press = 0;
 //Adding a new timer is simple, add it before the last enum.
 enum timer
 {
-
 	imu,
-
 	number_of_jobs //THIS HAS TO BE THE LAST ENUM
-
 };
 
 unsigned long saved_times[number_of_jobs] = {};
 
 template<typename F>
-void if_time_expired(timer job, unsigned long delay, F fn){
-
+void if_time_expired(timer job, unsigned long delay, F fn)
+{
 	if (millis() - saved_times[job] > delay)
   {
 		fn();
 		saved_times[job] = millis();
 	}
-
 }
 
-void setup() {
-
+void setup() 
+{
 	pinMode(LED_BUILTIN, OUTPUT);  //For the LEDs
 	pinMode(RGB_PIN_RED, OUTPUT);
 	pinMode(RGB_PIN_GREEN, OUTPUT);
@@ -66,9 +62,13 @@ void setup() {
 
 	unsigned long saved_time = millis();
 
-	while (!Serial) {
+	while (!Serial) 
+  {
 	//this empty while is intentional, sometimes serial connection is not established immediately, but we need it so we wait...
-		if(saved_time+1000u < millis() ) {break;} //after onesecond 
+		if (saved_time+1000u < millis()) 
+    {
+      break;
+    } //after onesecond 
 	}
 
 	Serial.println(F("Serial started; May your Coffee kick in before the Rocket does..."));
@@ -80,18 +80,26 @@ void setup() {
 	bool created = false;
 	String log_folder_name;
 
-	while (!created) {         //if this log file already exists, we create another in the format log_2.txt
-
+	while (!created) 
+  {         //if this log file already exists, we create another in the format log_2.txt
 		log_folder_name = "yeet_" + String(n);
-		if (!file_exists(log_folder_name)) {  //if the file is NOT present on the SD
+
+		if (!file_exists(log_folder_name)) 
+    {  //if the file is NOT present on the SD
+
 			Serial.println(log_folder_name);
-			if(!make_dir(log_folder_name)) {
+
+			if (!make_dir(log_folder_name)) 
+      {
 				Serial.println(F("ERROR_FILE3: Can't create directory."));
 				abort_blink(3);
 			}
+
 			created = true;	
 			Serial.println("Created new folder as: " + log_folder_name);
-		} else {  //else we try again with log_(n+1).txt
+		}
+    else 
+    {  //else we try again with log_(n+1).txt
 			++n;
 		}
 	}
@@ -106,7 +114,8 @@ void setup() {
 	byte status = mpu.begin();
 	info_logger.record_event("Inertial Measuring Unit yells code: ");
 	info_logger.record_event(String(status));
-	if (status != 0) {
+	if (status != 0) 
+  {
 		abort_blink(4);
 	}
 	info_logger.record_event("Calculating offsets, DON'T YEEET THE DEVICE!");
@@ -118,7 +127,8 @@ void setup() {
 	//=====================
 	//   Barometer INIT
 	//=====================
-	if (!bmp.begin_I2C()) {
+	if (!bmp.begin_I2C()) 
+  {
 		Serial.println("Could not find a valid BMP3 sensor, check wiring!");
 		while (1);
 	}
@@ -131,8 +141,10 @@ void setup() {
 
 	Serial.println("Doing 10 Settling readings"); //the first readings are always wrong, we hate them
 
-  	for (int i = 0; i<10; i++) { //10 was choosen at random, i do not know if we need less or more
-		if (! bmp.performReading()) {
+  	for (int i = 0; i < 10; ++i) 
+    { //10 was chosen at random, i do not know if we need less or more
+		  if (!bmp.performReading()) 
+      {
     		Serial.println("Failed to perform reading :(");
     		return;
   		}
@@ -152,16 +164,17 @@ void setup() {
 	
 }
 
-void loop() {
+void loop() 
+{
 
 	//===========
 	// IMU PART
 	//===========
-	if_time_expired(imu, IMU_DELAY, [](){ // print data every 500ms
+	if_time_expired(imu, IMU_DELAY, []()
+  { // print data every 500ms
 		mpu.update();
 		imu_logger.record_event(String(mpu.getAngleX()) + ", " + mpu.getAngleY());
 	});
-
 }
 
 
