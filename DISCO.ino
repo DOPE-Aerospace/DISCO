@@ -30,11 +30,11 @@ double min_press = 0;
 //Adding a new timer is simple, add it before the last enum.
 enum timer
 {
-	imu,
-	number_of_jobs //THIS HAS TO BE THE LAST ENUM
+	IMU,
+	NUMBER_OF_JOBS //THIS HAS TO BE THE LAST ENUM
 };
 
-unsigned long saved_times[number_of_jobs] = {};
+unsigned long saved_times[NUMBER_OF_JOBS] = {};
 
 template<typename F>
 void if_time_expired(timer job, unsigned long delay, F fn)
@@ -77,12 +77,12 @@ void setup()
 	bool created = false;
 	String log_folder_name;
 
-	while (!created) 
-  {         //if this log file already exists, we create another in the format log_2.txt
+	while (!created) //if this log file already exists, we create another in the format log_2.txt
+  {       
 		log_folder_name = "yeet_" + String(n);
 
-		if (!file_exists(log_folder_name)) 
-    {  //if the file is NOT present on the SD
+		if (!file_exists(log_folder_name)) //if the file is NOT present on the SD
+    {  
 
 			Serial.println(log_folder_name);
 
@@ -137,8 +137,8 @@ void setup()
 
 	Serial.println("Doing 10 Settling readings"); //the first readings are always wrong, we hate them
 
-  	for (int i = 0; i < 10; ++i) 
-    { //10 was chosen at random, i do not know if we need less or more
+  	for (int i = 0; i < 10; ++i) //10 was chosen at random, i do not know if we need less or more
+    { 
 		  if (!bmp.performReading()) 
       {
     		Serial.println("Failed to perform reading :(");
@@ -166,7 +166,7 @@ void loop()
 	//===========
 	// IMU PART
 	//===========
-	if_time_expired(imu, IMU_DELAY, []()
+	if_time_expired(IMU, IMU_DELAY, []()
   { // print data every 500ms
 		mpu.update();
 		imu_logger.record_event(String(mpu.getAngleX()) + ", " + mpu.getAngleY());
