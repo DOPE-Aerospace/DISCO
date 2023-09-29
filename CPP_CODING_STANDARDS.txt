@@ -1,0 +1,216 @@
+NAMES:
+	-In General, choose names that are meaningful and readable
+	-Avoid use of underscores '_'
+
+CLASS NAMES:
+	-Capitalize the first letter of each word
+
+METHOD/FUNCTION NAMES:
+	-Every method/function performs ONE action, so the name should make clear what it does. names should be verbs and written in mixed case starting with upper case:
+		=> OutputCalibrationData()
+		=> Normalize()
+	-Prefixes are sometimes useful:
+		=> Is/Has/Can		to ask a question about something and return bool type
+		=> Set/Get		to set/get a value
+		=> Initialize		to initialize an object
+		=> Computer 		to compute something
+	-The class name should not be duplicated in a method name
+		=> Vector Normalize() // NOT: Vector NormalizeVector()
+	-When coding from the formal specification, match names with the spec but use NO underscores
+
+METHOD/FUNCTION ARGUMENT NAMES:
+	-Use the same guideline as for variables
+	-When passing a class, an argument can have the same name as its type
+
+NAMESPACE NAMES:
+	-Use the same guideline as for class names. It is suggested to use the project name as a prefix for the namespace name
+		=> namespace GmatTimeUtil
+
+VARIABLES:
+	-Variables should begin with a lowercase letter, with the first letter of each word (after the first) in the name capitalized
+		=> double   	flatteningCoefficient;
+		=> MaVector3 	initialPosition;
+	-Add a comment to a variable declaration if the meaning isn't clear from the variable name
+	-Internal variables should be declared at the level at which they are needed. For example, if a variable is used throughout the procedure, it should be declared at the top of the procedure. If a variable is used only in a computational block, for example, it may be declared at the top of that block.
+	-Internal variable declarations should be commented well, if their meaning is not clear from the variable names
+	-The declaration of indices may be inside a for loop or above it (if that variable is needed after the execution of the loop, it will need to be declared above, not inside it)
+		=> for (Integer i = 0; bool done = False; i < MAX_SIZE && ! done; i++)
+		OR
+		=> Integer i;		// loop counter
+		   bool done;		// have we found the matching item?
+		   for (i = 0; i < MAX_SIZE && ! done; i++)
+
+POINTER VARIABLES:
+	-Place the '*' with the variable name rather than with the type
+		=> MAB::String *name = new MAB::String;
+	-Take care using pointer conversions, particularly conversion from a base type to a derived type-
+	-For a null pointer, use "NULL".
+
+REFERENCE VARIABLES:
+	-Put the '&' with the variable name rather than with the type
+		=> Quaternion Rate(const Vector3 &w) const;
+
+GLOBAL VARIABLES:
+	-Use of global variables should be avoided. Instead, use namespaces.
+
+TYPE NAMES:
+	-Type names should have the first letter of each word capitalized
+		=> typedef unsigned int SystemType
+
+ENUM TYPE NAMES AND ENUM NAMES:
+	-Enum types should follow Class Name policy
+	-Enum names should be declared using all caps and underscores between words
+		=> enum Colors {RED, BLUE, GREEN};
+
+CONSTANTS / #define
+	-Constants must be declared using all CAPS and underscores between words
+		=> const int MINIMUM_NUMBER_OF_BYTES = 4;
+	-The use of #define statements should be avoided. const variables or enumaration types should be used instead of constant macros (an exception is when conditional debug is included - #define statements may be used then).
+		use:
+		=> const unsigned int MAX_NUMBER_OF_FILES = 4;
+		instead of:
+		=> #define MAX_NUMBER_OF_FILES 4
+
+STRUCTURE NAMES:
+	-For structure names, follow conventions for class names with the word "Type"
+		=> struct TimeType
+		   {
+			IntType year;
+			IntType month;
+			IntType day;
+		   };
+	-Use of classes is preferred to structs. However, if all data is public, a struct may be used
+	-The developer may use structs to encapsulate global data (including exceptions)
+		=> struct AtitudeTypes
+		   {
+			static const RealType TEST_ACCURACY;
+		   };
+
+C FUNCTION NAMES:
+	-There should be very few C functions used in a C++ program
+
+
+
+
+FORMATTING
+Use of standard formatting makes code easier to read
+	-Use blank lines to organize statements into paragraphs and to separate logically related statements.
+	-Limit the complexity of statements - break a complex statement into several simple statements if it makes the code clearer to read.
+	-Indent to show the logical structure of your code
+
+VARIABLES:
+	-It is preferable to declare only variable per line in the code
+
+BRACE {}:
+	-Braces should be used for all blocks. The first brace should appear on the following line, lined up with the keyword.
+		=> for (j = 0; j < MAX_NUMBER_OF_ITERATIONS; j++)
+		   {
+			...
+		   }
+
+PARENTHESES ():
+	-Always put ( ) around a condition.
+	-Put a space between a keyword and parentheses.
+	-When there are several variable declarations listed together, line up the variables
+		=> int			myVar1;
+		   unsigned long	myVar2;
+		   double		myVar3;
+
+TAB / SPACE
+	-DO NOT use tabs. Use spaces
+	-Put one space after a comma and semicolons:
+		=> exp(2, x)
+		=> for (i = 0; i < n; ++i)
+	-Put one space around assignment operators:
+		=> c1 = c2
+	-Put space between keyword and parentheses:
+		=> if ( ... )
+		=> while ( ... )
+	-Always put a space around conditional operators:
+		=> z = (a > b) ? a : b;
+	-Do not put space before parentheses following function names:
+		=> z = exp(2, x)
+	-Do not put spaces between unary operators and their operands:
+		=> p->m
+		=> s.m
+		=> a[i]
+		=> a(i)
+	-Do not put space around the primary operators: ->, ., []:
+		=> ++i
+
+BLANK LINES:
+	-Use blank lines to create paragraphs in the code or comments to make the code more understandable
+
+METHOD/FUNCTION ARGUMENTS:
+	-When all arguments for a function do not fit on one line, try to line up the first argument in each line:
+		=> void SomeFunction(unsigned int someCounter,
+				     double someOtherArgument,
+				     int theLastArgument);
+
+IF / IF ELSE:
+	-Indent statements one level using braces. For a single statement use of braces is optional:
+		=> if (condition)
+			statement;
+		   else if (condition)
+			statement;
+		   else
+			statement;
+		   if (condition)
+		   {
+			statement1
+			statement2
+		   }
+	-it is recommended to use explicit comparisons:
+		use
+		=> if (theFile->EndOfData() != true)
+		instead of
+		=> if ( ! theFile->EndOfData())
+	-ALWAYS use braces for nested if statements
+
+SWITCH:
+	-All switch statements should have a default case, which may be merely a fata error exit.
+	-The default case should be last and does not necessarily require a break.
+	-Falling through a case statement into the next case is permetted as long as a comment is included
+	-Use the following format for switch statements:
+		=> switch (expression)
+		   {
+			case aaa:
+				statement[s]
+				break;
+
+			case bbb: // fall through
+
+			case ccc:
+			{
+				int v;
+				statement[s]
+				break;
+			}
+
+			default:
+				statement[s]
+				break;
+
+FOR / WHILE:
+	-Indent statements one level using braecs. for a single statement use of braes is optional
+		=> for (condition)
+			statement;
+		=> for (condition)
+		   {
+			statement1;
+			statement2;
+		   }
+GOTO:
+	-DO NOT use goto
+
+USE OF "?" ":":
+	-Conditional statements are fine as long as they are not too complex.
+	-Put the condition in parentheses so as to set it off from other code
+		=> (condition) ? statement1 :statement2;
+		=> (condition)
+			? long statement1
+			: long statement2;
+
+MAXIMUM CHARACTERS PER LINE:
+	-Lines should be no more than 80 characters long.
+

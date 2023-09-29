@@ -62,13 +62,10 @@ void setup()
 
 	unsigned long saved_time = millis();
 
-	while (!Serial) 
+	while (!Serial) 	//this empty while is intentional, sometimes serial connection is not established immediately, but we need it so we wait...
   {
-	//this empty while is intentional, sometimes serial connection is not established immediately, but we need it so we wait...
-		if (saved_time+1000u < millis()) 
-    {
-      break;
-    } //after onesecond 
+		if (saved_time+1000u < millis()) //after onesecond 
+      break; 
 	}
 
 	Serial.println(F("Serial started; May your Coffee kick in before the Rocket does..."));
@@ -98,10 +95,9 @@ void setup()
 			created = true;	
 			Serial.println("Created new folder as: " + log_folder_name);
 		}
-    else 
-    {  //else we try again with log_(n+1).txt
+    else //else we try again with log_(n+1).txt
 			++n;
-		}
+		
 	}
 
 	info_logger = MessageLogger(log_folder_name + "/info", "message");
@@ -114,10 +110,10 @@ void setup()
 	byte status = mpu.begin();
 	info_logger.record_event("Inertial Measuring Unit yells code: ");
 	info_logger.record_event(String(status));
-	if (status != 0) 
-  {
+	
+  if (status != 0) 
 		abort_blink(4);
-	}
+
 	info_logger.record_event("Calculating offsets, DON'T YEEET THE DEVICE!");
 	mpu.calcOffsets();
 	info_logger.record_event("Done! the offsets aree:");

@@ -56,10 +56,8 @@ void Logger::create_log()
 			created = true;
 			
 		}
-    else 
-    {  //else we try again with log_(n+1).txt
+    else //else we try again with log_(n+1).txt
 			++n;
-		}
 
 	}
 
