@@ -14,7 +14,8 @@
 #include "config.h"
 
 //Logger Globals
-Logger imu_logger;        //global because needed in loop() and setup()
+Logger gps_logger;        //global because needed in loop() and setup()
+Logger bmp_logger;
 MessageLogger info_logger; //global because needed in loop() and setup()
 
 //IMU Globals
@@ -22,15 +23,16 @@ MPU6050 mpu(Wire);    //Class for the IMU
 
 //Barometer Globals
 Adafruit_BMP3XX bmp;
-float starting_pressure = 0;
-float saved_pressure = 0;
-bool falling = false;
+float  starting_pressure = 0;
+float  saved_pressure = 0;
+bool   falling = false;
 double min_press = 0;
 
 //Adding a new timer is simple, add it before the last enum.
 enum timer
 {
-	IMU,
+	BARO,
+	GPS,
 	NUMBER_OF_JOBS //THIS HAS TO BE THE LAST ENUM
 };
 
@@ -69,6 +71,8 @@ void setup()
 	}
 
 	Serial.println(F("Serial started; May your Coffee kick in before the Rocket does..."));
+
+	Wire.begin();
 	
 	//=============
 	// Logger Init
@@ -101,24 +105,9 @@ void setup()
 	}
 
 	info_logger = MessageLogger(log_folder_name + "/info", "message");
-	imu_logger = Logger(log_folder_name + "/imu", "x, y, z");
+	bmp_logger = Logger(log_folder_name + "/bmp", "p");
+	gps_logger = Logger(log_folder_name + "/gps", "text");
 	
-	//===========
-	// IMU INIT
-	//===========
-	Wire.begin(); //for the IMU
-	byte status = mpu.begin();
-	info_logger.record_event("Inertial Measuring Unit yells code: ");
-	info_logger.record_event(String(status));
-	
-  if (status != 0) 
-		abort_blink(4);
-
-	info_logger.record_event("Calculating offsets, DON'T YEEET THE DEVICE!");
-	mpu.calcOffsets();
-	info_logger.record_event("Done! the offsets aree:");
-	info_logger.record_event("Accel: X:" + String(mpu.getAccXoffset()) + " Y:" + mpu.getAccYoffset() + " Z:" + mpu.getAccZoffset());
-	info_logger.record_event("Gyro: X:" + String(mpu.getGyroXoffset()) + " Y:" + mpu.getGyroYoffset() + " Z:" + mpu.getGyroZoffset());
 
 	//=====================
 	//   Barometer INIT
@@ -166,11 +155,17 @@ void loop()
 	//===========
 	// IMU PART
 	//===========
-	if_time_expired(IMU, IMU_DELAY, []()
+	if_time_expired(BARO, BARO_DELAY, []()
   { // print data every 500ms
-		mpu.update();
-		imu_logger.record_event(String(mpu.getAngleX()) + ", " + mpu.getAngleY());
+		bmp.performReading();
+		bmp_logger.record_event(String(bmp.pressure));
 	});
+
+	if_time_expired(GPS, GPS_DELAY, []()
+  { // print data every 500ms
+		gps_logger.record_event(String("test"));
+	});
+
 }
 
 

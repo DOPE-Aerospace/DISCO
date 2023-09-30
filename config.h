@@ -42,6 +42,8 @@
 //---------------
 //  BARO CONFIG
 //---------------
+#define BARO_DELAY 500
+
 #define BMP_SCK 13
 #define BMP_MISO 12
 #define BMP_MOSI 11
@@ -50,3 +52,8 @@
 //Falling Treshhold is the max falling distance from the maximum hight after which the parachute is triggered. 
 //don't set it too low or the rocket opens the parachute before apogee. Don't set it to high or the parachute opens to late and the parachute breaks. 
 #define FALLING_TH 10 //in meters, ABSOLUTLY dont set it under 1m.
+
+//--------------
+//	GPS Config
+//--------------
+#define GPS_DELAY 1000
