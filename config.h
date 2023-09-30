@@ -8,10 +8,10 @@
 //----------------
 
 //This define is for general LED usage.
-#define USE_LED
+//#define USE_LED
 
 //If you have a RGB led connected this will indicate status signals with color!
-#define USE_RGB
+//#define USE_RGB
 
 //RGB pinout options.
 #define RGB_PIN_RED 0

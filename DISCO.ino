@@ -7,6 +7,7 @@
 #include <MPU6050_light.h>
 #include <Adafruit_Sensor.h>
 #include "Adafruit_BMP3XX.h"
+#include <TinyGPS++.h>
 
 //Custom Librarys
 #include "log_lib.h"
@@ -19,7 +20,12 @@ Logger bmp_logger;
 MessageLogger info_logger; //global because needed in loop() and setup()
 
 //IMU Globals
-MPU6050 mpu(Wire);    //Class for the IMU
+//MPU6050 mpu(Wire);    //Class for the IMU
+
+//GPS Globals
+bool fixFound = false;
+static const uint32_t GPSBaud = 9600;
+TinyGPSPlus gps;
 
 //Barometer Globals
 Adafruit_BMP3XX bmp;
@@ -48,6 +54,9 @@ void if_time_expired(timer job, unsigned long delay, F fn)
 	}
 }
 
+//=============
+//	 SETUP
+//=============
 void setup() 
 {
 	pinMode(LED_BUILTIN, OUTPUT);  //For the LEDs
@@ -60,10 +69,9 @@ void setup()
 	//=============
 	// SERIAL INIT
 	//=============
-	Serial.begin(9600);  //Bit per second data transfer, for now we send only text which works good with 9600
+	Serial.begin(115200);  //Bit per second data transfer, for now we send only text which works good with 9600
 
 	unsigned long saved_time = millis();
-
 	while (!Serial) 	//this empty while is intentional, sometimes serial connection is not established immediately, but we need it so we wait...
   {
 		if (saved_time+1000u < millis()) //after onesecond 
@@ -140,6 +148,12 @@ void setup()
   	starting_pressure = (bmp.pressure);
 	min_press = starting_pressure;
 
+	//=======
+	// GPS
+	//=======
+	Serial1.begin(GPSBaud);
+
+
 	//===========
 	//   Misc
 	//===========
@@ -161,11 +175,25 @@ void loop()
 		bmp_logger.record_event(String(bmp.pressure));
 	});
 
+	while(Serial1.available() > 0) //the gps object has to be fed data constantly to have the right mesurements
+	{
+		//Serial.write(Serial1.read());
+		gps.encode(Serial1.read());
+	}
+	
 	if_time_expired(GPS, GPS_DELAY, []()
-  { // print data every 500ms
-		gps_logger.record_event(String("test"));
+	{ // print data every 500ms    		
+		if (gps.location.isUpdated())
+		{
+			if (!fixFound) 
+			{
+				info_logger.record_event("--Found a Fix!!--");
+				fixFound = true; 
+			}
+			String event = String(gps.location.lat(), 6) + ", " + String(gps.location.lng(), 6);
+			gps_logger.record_event(event);
+		}
 	});
-
-}
+}//loop end
 
 
