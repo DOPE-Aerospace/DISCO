@@ -60,6 +60,7 @@ void if_time_expired(timer job, unsigned long delay, F fn)
 void setup() 
 {
 	pinMode(LED_BUILTIN, OUTPUT);  //For the LEDs
+	digitalWrite(LED_BUILTIN, HIGH);
 	pinMode(RGB_PIN_RED, OUTPUT);
 	pinMode(RGB_PIN_GREEN, OUTPUT);
 	pinMode(RGB_PIN_BLUE, OUTPUT);
@@ -160,6 +161,8 @@ void setup()
 	info_logger.record_event("Battery status is: " + String(batteryStatus()) + " volts");
 	info_logger.record_event("Setup finished.");
 	rgb_color(RGB_GREEN); //setup finished
+	delay(1000);
+	digitalWrite(LED_BUILTIN, LOW);
 	
 }
 
@@ -188,10 +191,13 @@ void loop()
 			if (!fixFound) 
 			{
 				info_logger.record_event("--Found a Fix!!--");
+				info_logger.record_event(String(gps.date.value()) + " " + String(gps.time.value()));
 				fixFound = true; 
 			}
+			digitalWrite(LED_BUILTIN, HIGH);
 			String event = String(gps.location.lat(), 6) + ", " + String(gps.location.lng(), 6);
 			gps_logger.record_event(event);
+			digitalWrite(LED_BUILTIN, LOW);
 		}
 	});
 }//loop end
